@@ -16,6 +16,8 @@
 #include <sys/socket.h>
 
 const int BUFFER_SIZE = 512;
+const int DEFAULT_PORT = 80;
+const string COMANDS_FILE = "commands.txt";
 
 // The arguments passed in the command line, NOT USED!
 int serverPort;
@@ -23,23 +25,18 @@ char *serverIP;
 
 using namespace std;
 
-struct Command {
-    string method, fileName, hostName, portNumber;
-};
-
-Command* parseCommand(string command){
-    Command* ret = NULL;
+bool parseCommand(string command, string &method, string &fileName, string &hostName, string &portNumber){
     const string commandPattern = "(GET|POST)\\s(\\S+)\\s(\\S+)(\\s\\((\\d+)\\))?";
     regex commandRegex = regex(commandPattern);
     smatch baseMatch;
     if(regex_match(command, baseMatch, commandRegex)){
-        ret = new Command();
-        ret->method = baseMatch[1];
-        ret->fileName = baseMatch[2];
-        ret->hostName = baseMatch[3];
-        ret->portNumber = baseMatch[5] == "" ? "80" : baseMatch[5].str();
+        method = baseMatch[1];
+        fileName = baseMatch[2];
+        hostName = baseMatch[3];
+        portNumber = baseMatch[5] == "" ? "80" : baseMatch[5].str();
+        return true;
     }
-    return ret;
+    return false;
 }
 
 string readFile(string file){
@@ -114,9 +111,8 @@ void executeCommand(string method, string fileName, string hostName, string port
         printf("POST: file sent successfully, return code = %d\n", sendReturnValue);
     } else {
         string header = "GET " + fileName + " HTTP/1.1\r\n" +
-                        "Host: 127.0.0.1\r\n" +
-                        "User-Agent: Mozilla/5.0 (en-us)\r\n\r\n";
-        std::cout << header << std::endl;
+                        "Host: 127.0.0.1\r\n\r\n";
+        // cout << header << endl;
         int sendReturnValue = send(sockfd, header.c_str(), header.size(), 0);
         if(sendReturnValue < 0){
             puts("GET: header send failed.");
@@ -124,17 +120,17 @@ void executeCommand(string method, string fileName, string hostName, string port
         }
         printf("GET: header sent successfully, return code = %d\n", sendReturnValue);
 
-        int nDataLength;
+        int dataLength;
         char buffer[BUFFER_SIZE];
         bool continue_work = true;
         char* terminator = "\r\n\r\n";
         int terminatorLen = strlen(terminator);
         while(continue_work) {
-            nDataLength = read(sockfd, buffer, BUFFER_SIZE);
-            buffer[nDataLength] = '\0';
+            dataLength = read(sockfd, buffer, BUFFER_SIZE);
+            buffer[dataLength] = '\0';
             printf("%s\n", buffer);
 
-            for(int i = 0; i < nDataLength - terminatorLen; i++) {
+            for(int i = 0; i < dataLength - terminatorLen; i++) {
                 bool done = false;
                 for(int j = 0; j < terminatorLen; j++) {
                     if(terminator[j] != buffer[i + j]) break;
@@ -152,17 +148,20 @@ void executeCommand(string method, string fileName, string hostName, string port
 int main(int argc, char *argv[]){
     if(argc < 2 or argc > 3){
         cerr <<"Invalid command, correct syntax: " + string(argv[0]) + " server_ip port_number" <<endl;
-        cerr <<"Notice that the port_number is optional with 80 as default.";
+        cerr <<"Notice that the port_number is optional with " <<DEFAULT_PORT <<" as default.";
         return 0;
     }
 
     serverIP = argv[1];
-    serverPort = argc == 3 ? atoi(argv[2]) : 80;
+    serverPort = argc == 3 ? atoi(argv[2]) : DEFAULT_PORT;
 
-    auto commands = readFileLines("commands.txt");
+    auto commands = readFileLines(COMMANDS_FILE);
     for(string c : commands){
-        Command *command = parseCommand(c);
-        if(command) executeCommand(command->method, command->fileName, command->hostName, command->portNumber);
+        string method, fileName, hostName, portNumber;
+        if(parseCommand(c, method, fileName, hostName, portNumber)){
+        	cout <<"Executing command: " <<c <<endl;
+        	executeCommand(method, fileName, hostName, portNumber);
+        }
         else cerr <<"Invalid command: " + c <<endl;
     }
 }
