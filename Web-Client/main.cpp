@@ -19,6 +19,7 @@ using namespace std;
 
 const int BUFFER_SIZE = 512;
 const int DEFAULT_PORT = 80;
+const int RECEIVE_TIMEOUT = 2; // in seconds
 const string COMMANDS_FILE = "commands.txt";
 
 // The arguments passed in the command line, NOT USED!
@@ -122,25 +123,20 @@ void executeCommand(string method, string fileName, string hostName, string port
 
         int dataLength;
         char buffer[BUFFER_SIZE];
-        bool continue_work = true;
-        string terminator = "\r\n\r\n";
-        int terminatorLen = terminator.size();
-        while(continue_work) {
+
+        clock_t lastReceiveTime = clock();
+        while(true) {
             dataLength = read(sockfd, buffer, BUFFER_SIZE);
             buffer[dataLength] = '\0';
             printf("%s\n", buffer);
 
-            for(int i = 0; i < dataLength - terminatorLen; i++) {
-                bool done = false;
-                for(int j = 0; j < terminatorLen; j++) {
-                    if(terminator[j] != buffer[i + j]) break;
-                    if(j == terminatorLen - 1) {
-                        done = true;
-                    }
-                }
-                continue_work = !done;
-            }
+            clock_t currentTime = clock();
+            if(dataLength) lastReceiveTime = currentTime;
+            else if(double(currentTime - lastReceiveTime) / CLOCKS_PER_SEC > RECEIVE_TIMEOUT)
+            	break;
         }
+
+        // TODO: store received file in local directory
     }
     close(sockfd);
 }

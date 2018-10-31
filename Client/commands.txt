@@ -1,2 +1,0 @@
-GET index.html 127.0.0.1 8080
-POST commands.txt 127.0.0.1
