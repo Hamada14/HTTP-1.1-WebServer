@@ -15,15 +15,15 @@
 #include <ctype.h>
 #include <sys/socket.h>
 
+using namespace std;
+
 const int BUFFER_SIZE = 512;
 const int DEFAULT_PORT = 80;
-const string COMANDS_FILE = "commands.txt";
+const string COMMANDS_FILE = "commands.txt";
 
 // The arguments passed in the command line, NOT USED!
 int serverPort;
 char *serverIP;
-
-using namespace std;
 
 bool parseCommand(string command, string &method, string &fileName, string &hostName, string &portNumber){
     const string commandPattern = "(GET|POST)\\s(\\S+)\\s(\\S+)(\\s\\((\\d+)\\))?";
@@ -123,8 +123,8 @@ void executeCommand(string method, string fileName, string hostName, string port
         int dataLength;
         char buffer[BUFFER_SIZE];
         bool continue_work = true;
-        char* terminator = "\r\n\r\n";
-        int terminatorLen = strlen(terminator);
+        string terminator = "\r\n\r\n";
+        int terminatorLen = terminator.size();
         while(continue_work) {
             dataLength = read(sockfd, buffer, BUFFER_SIZE);
             buffer[dataLength] = '\0';
