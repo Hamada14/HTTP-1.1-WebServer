@@ -1,12 +1,18 @@
 #include "../headers/GetRequest.h"
 #include "../headers/Socket.h"
+#include "../headers/Config.h"
+#include "../headers/Util.h"
 #include <regex>
 #include <fstream>
+#include <iostream>
 
 const std::regex GetRequest::FILE_PATH_REGEX("GET\\s(.+)\\sHTTP\\/1.1");
 const char GetRequest::BACK_SLASH = '/';
 
-GetRequest::GetRequest(std::string request): file_path_(extract_file_path(request)) {
+GetRequest::GetRequest(std::string request) {
+    file_path_ = Util::join_path(
+            Config::getInstance()->get(Config::PUBLIC_DIRECTORY_KEY),
+            extract_file_path(request));
 }
 
 void GetRequest::process(Socket *socket) {

@@ -2,7 +2,6 @@
 #include "../headers/GetRequest.h"
 #include "../headers/PostRequest.h"
 #include "../headers/MIMETypesLoader.h"
-#include <iostream>
 
 const std::string Request::GET_METHOD = "GET";
 const std::string Request::POST_METHOD = "POST";
