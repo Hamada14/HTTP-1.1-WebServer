@@ -13,6 +13,7 @@ GetRequest::GetRequest(std::string request) {
     file_path_ = Util::join_path(
             Config::getInstance()->get(Config::PUBLIC_DIRECTORY_KEY),
             extract_file_path(request));
+    std::cout << file_path_ << std::endl;
 }
 
 void GetRequest::process(Socket *socket) {

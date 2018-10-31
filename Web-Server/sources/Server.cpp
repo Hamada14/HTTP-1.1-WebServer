@@ -47,5 +47,6 @@ void Server::run() {
     while((new_socket_listener = accept(socket_descriptor, (struct sockaddr *)&address_, (socklen_t*)&address_len)) >= 0) {
         ServerWorker* worker = new ServerWorker(new_socket_listener);
         worker->process();
+        printf("New Request Received");
     }
 }
