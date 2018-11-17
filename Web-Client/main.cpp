@@ -104,6 +104,7 @@ std::string readBytes(int socket_descriptor, int length) {
         if(data_length != 0) {
             last_received_time = current_time;
         } else if(double(current_time - last_received_time) / CLOCKS_PER_SEC > RECEIVE_TIMEOUT) {
+            printf("Timed out waiting for response");
             return "";
         }
     }
@@ -127,6 +128,7 @@ std::string readNextResponse(int socket_descriptor) {
         if(data_length != 0) {
             last_received_time = current_time;
         } else if(double(current_time - last_received_time) / CLOCKS_PER_SEC > RECEIVE_TIMEOUT) {
+            printf("Timed out waiting for response");
             return "";
         }
     }
@@ -140,7 +142,7 @@ int extract_content_length(std::string response) {
     std::smatch matches;
     std::regex content_length_regex("\\r\\nContent-Length:\\s*([0-9]+)\\r\\n");
     std::regex_search(response, matches, content_length_regex);
-    return std::stoi(matches[1]);
+    return matches.length() >= 2 ? std::stoi(matches[1]) : 0;
 }
 
 void write_data_to_file(std::string content, std::string file_name) {
