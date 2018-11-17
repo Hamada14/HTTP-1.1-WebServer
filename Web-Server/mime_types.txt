@@ -4,7 +4,7 @@ text/html htm
 text/html html
 text/html stm
 text/iuls uls
-sourcetext/plain c
+C/C++ sourcetext/plain c
 text/plain h
 text/plain txt
 text/richtext rtx
@@ -44,6 +44,7 @@ application/internet-property-stream acx
 application/mac-binhex40 hqx
 application/msword doc
 application/msword dot
+Binary file	application/octet-stream	*
 application/octet-stream bin
 application/octet-stream class
 application/octet-stream dms
