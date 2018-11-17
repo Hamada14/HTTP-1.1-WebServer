@@ -14,6 +14,7 @@
 #include <netdb.h>
 #include <ctype.h>
 #include <sys/socket.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -88,6 +89,65 @@ int makeSocket(string hostName, string portNumber){
     return sockfd;
 }
 
+
+std::string read_buffer;
+std::regex REQUEST_TERMINATOR_REGEX("\\r\\n\\r\\n");
+
+std::string readBytes(int socket_descriptor, int length) {
+    clock_t last_received_time = clock();
+    while(read_buffer.length() < length) {
+        char buffer[BUFFER_SIZE] = {0};
+        size_t data_length = read(socket_descriptor, buffer, BUFFER_SIZE);
+        std::string new_input(buffer, buffer + data_length);
+        read_buffer += new_input;
+        clock_t current_time = clock();
+        if(data_length != 0) {
+            last_received_time = current_time;
+        } else if(double(current_time - last_received_time) / CLOCKS_PER_SEC > RECEIVE_TIMEOUT) {
+            return "";
+        }
+    }
+    std::string result = read_buffer.substr(0, length);
+    read_buffer = read_buffer.substr(length, read_buffer.length() - length);
+    return result;
+}
+
+
+std::string readNextResponse(int socket_descriptor) {
+    std::smatch matches;
+    std::regex_search(read_buffer, matches, REQUEST_TERMINATOR_REGEX);
+    clock_t last_received_time = clock();
+    while(matches.size() == 0) {
+        char buffer[BUFFER_SIZE] = {0};
+        size_t data_length = read(socket_descriptor, buffer, BUFFER_SIZE);
+        std::string new_input(buffer, buffer + data_length);
+        read_buffer += new_input;
+        std::regex_search(read_buffer, matches, REQUEST_TERMINATOR_REGEX);
+        clock_t current_time = clock();
+        if(data_length != 0) {
+            last_received_time = current_time;
+        } else if(double(current_time - last_received_time) / CLOCKS_PER_SEC > RECEIVE_TIMEOUT) {
+            return "";
+        }
+    }
+    int break_point = matches[0].length() + matches.position(0);
+    std::string current_request = read_buffer.substr(0, break_point);
+    read_buffer = read_buffer.substr(break_point, read_buffer.length() - break_point + 1);
+    return current_request;
+}
+
+int extract_content_length(std::string response) {
+    std::smatch matches;
+    std::regex content_length_regex("\\r\\nContent-Length:\\s*([0-9]+)\\r\\n");
+    std::regex_search(response, matches, content_length_regex);
+    return std::stoi(matches[1]);
+}
+
+void write_data_to_file(std::string content, std::string file_name) {
+    std::ofstream f_stream(file_name.c_str());
+    f_stream.write(content.c_str(), content.length());
+}
+
 void executeCommand(string method, string fileName, string hostName, string portNumber){
     int sockfd = makeSocket(hostName, portNumber);
 
@@ -105,16 +165,23 @@ void executeCommand(string method, string fileName, string hostName, string port
             return;
         }
         printf("POST: header sent successfully, return code = %d\n", sendReturnValue);
-        sendReturnValue = send(sockfd, fileString.c_str(), fileString.size(), 0);
+        std::string response = readNextResponse(sockfd);
+        std::cout << response << std::endl;
+        if(response.substr(9, 3) == "200") {
+            sendReturnValue = send(sockfd, fileString.c_str(), fileString.size(), 0);
+        } else {
+            printf("Not allowed to Post file to the server\n");
+        }
         if(sendReturnValue < 0) {
             puts("POST: file send failed.");
             return;
         }
         printf("POST: file sent successfully, return code = %d\n", sendReturnValue);
+        std::cout <<  "-----------------------------------------------------------------" << std::endl;
     } else {
         string header = "GET " + fileName + " HTTP/1.1\r\n" +
                         "Host: 127.0.0.1\r\n\r\n";
-        // cout << header << endl;
+
         int sendReturnValue = send(sockfd, header.c_str(), header.size(), 0);
         if(sendReturnValue < 0){
             puts("GET: header send failed.");
@@ -122,22 +189,17 @@ void executeCommand(string method, string fileName, string hostName, string port
         }
         printf("GET: header sent successfully, return code = %d\n", sendReturnValue);
 
-        int dataLength;
-        char buffer[BUFFER_SIZE];
-
-        clock_t lastReceiveTime = clock();
-        while(true) {
-            dataLength = read(sockfd, buffer, BUFFER_SIZE);
-            buffer[dataLength] = '\0';
-            printf("%s\n", buffer);
-
-            clock_t currentTime = clock();
-            if(dataLength) lastReceiveTime = currentTime;
-            else if(double(currentTime - lastReceiveTime) / CLOCKS_PER_SEC > RECEIVE_TIMEOUT)
-            	break;
+        std::string response = readNextResponse(sockfd);
+        if(response.length() == 0) {
+            printf("Error receiving response due to timeout\n");
+            return;
         }
-
-        // TODO: store received file in local directory
+        int content_length = extract_content_length(response);
+        std::string file_content = readBytes(sockfd, content_length);
+        std::cout << response << std::endl;
+        std::cout << file_content << std::endl;
+        std::cout << "-----------------------------------------------------------------" << std::endl;
+        write_data_to_file(file_content, fileName.substr(1));
     }
     close(sockfd);
 }

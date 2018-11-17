@@ -23,7 +23,6 @@ std::string Socket::readInput(int length) {
     return result;
 }
 
-#include <algorithm>
 Request* Socket::readNextRequest() {
     std::smatch matches;
     std::regex_search(buffer_, matches, REQUEST_TERMINATOR);

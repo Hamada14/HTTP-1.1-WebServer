@@ -8,9 +8,12 @@ ServerWorker::~ServerWorker() {
     delete this->socket;
 }
 
+#include <iostream>
+
 void ServerWorker::process() {
     while(true) {
         Request* request = socket->readNextRequest();
         request->process(this->socket);
+        std::cout << "Another Request" << std::endl;
     }
 }
