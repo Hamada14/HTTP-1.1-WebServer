@@ -40,11 +40,19 @@ bool parseCommand(string command, string &method, string &fileName, string &host
     return false;
 }
 
-string readFile(string file){
-    ifstream fin(file);
+string readFile(string file_name){
+    ifstream fin(file_name);
     string ret, line;
+    size_t buffer_size = 1024;
+    char buffer[buffer_size];
+    size_t len = 0;
+    std::ostringstream oss;
+    while((len = fin.readsome(buffer, buffer_size)) > 0)
+    {
+        oss.write(buffer, len);
+    }
     while(getline(fin, line)) ret += line;
-    return ret;
+    return oss.str();
 }
 
 vector<string> readFileLines(string file){
@@ -98,7 +106,7 @@ void executeCommand(string method, string fileName, string hostName, string port
         }
         printf("POST: header sent successfully, return code = %d\n", sendReturnValue);
         sendReturnValue = send(sockfd, fileString.c_str(), fileString.size(), 0);
-        if(sendReturnValue < 0){
+        if(sendReturnValue < 0) {
             puts("POST: file send failed.");
             return;
         }
