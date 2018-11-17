@@ -11,6 +11,11 @@ const std::regex Socket::REQUEST_TERMINATOR("\\r\\n\\s*\\r\\n");
 
 Socket::Socket(int socket_descriptor): socket_descriptor_(socket_descriptor) {}
 
+/**
+ * Reads a specific amount of bytes from the socket buffer.
+ * @param length The number of bytes to be read from the socket buffer or received from the client.
+ * @return String containing the data that existed in the socket buffer, whose length is equal to the specified length.
+ */
 std::string Socket::readInput(int length) {
     while(buffer_.length() < length) {
         char buffer[BUFFER_SIZE] = {0};
@@ -23,13 +28,17 @@ std::string Socket::readInput(int length) {
     return result;
 }
 
+/**
+ * Reads the next request by terminating just after reading a \r\n\s*\r\n.
+ * @return Request object for the first request in the socket buffer.
+ */
 Request* Socket::readNextRequest() {
     std::smatch matches;
     std::regex_search(buffer_, matches, REQUEST_TERMINATOR);
     while(matches.size() == 0) {
         char buffer[BUFFER_SIZE] = {0};
-        read(socket_descriptor_, buffer, BUFFER_SIZE);
-        std::string new_input(buffer);
+        int data_length = read(socket_descriptor_, buffer, BUFFER_SIZE);
+        std::string new_input(buffer, buffer + data_length);
         buffer_ += new_input;
         std::regex_search(buffer_, matches, REQUEST_TERMINATOR);
     }
@@ -39,6 +48,11 @@ Request* Socket::readNextRequest() {
     return request;
 }
 
+
+/**
+ * Writes a string to the socket buffer to be sent to the client.
+ * @param s String to be written to the client.
+ */
 void Socket::writeOutput(std::string s) {
     const char* out = s.c_str();
     for(size_t i = 0; i < s.length(); i += BUFFER_SIZE) {

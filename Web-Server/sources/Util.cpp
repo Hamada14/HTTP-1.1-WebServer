@@ -3,6 +3,11 @@
 #include <iostream>
 #include <sstream>
 
+/**
+ * This namespace contains some utility functions that're used throughout the project.
+ * You can probably guess what these functions do from their names and if you don't then you probably won't understand even with
+ * documentation. So please don't let me suffer and write documentation for these functions :)
+ */
 namespace Util {
     bool isWhiteSpace(const char c) {
         return c == ' ' || c == '\t';
