@@ -73,7 +73,7 @@ void Config::readCommandLineProperties(int argc, const char **argv) {
     }
     for (int i = 1; i < argc; i += 2) {
         std::string str(argv[i]);
-        if ((str.length() > 1) && (str[0] == '-') && validKey(str.substr(0))) {
+        if (str.length() > 1 && str[0] == '-' && validKey(str.substr(0))) {
             key_to_value[str.substr(0)] = std::string(argv[i + 1]);
         } else {
             std::cerr << "Invalid Parameter key {" << str << "}" << std::endl;

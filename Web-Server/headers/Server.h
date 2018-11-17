@@ -2,6 +2,7 @@
 #define WEB_SERVER_SERVER_H
 
 #include <netinet/in.h>
+#include "../headers/ThreadPool.h"
 
 class Server {
 
@@ -12,6 +13,8 @@ public:
 
 private:
     const static int DEFAULT_PORT_;
+    const static int THREADS_COUNT_;
+    ThreadPool pool;
 
     int port_;
     struct sockaddr_in address_;

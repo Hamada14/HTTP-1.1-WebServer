@@ -7,11 +7,10 @@ class ServerWorker {
 
 public:
     ServerWorker(int socket_identifier);
-    ~ServerWorker();
     void process();
 
 private:
-    Socket* socket;
+    Socket socket;
 };
 
 
