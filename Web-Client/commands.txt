@@ -1,1 +1,1 @@
-GET /mado.html 127.0.0.1 (8080)
+POST /posted_file.html 127.0.0.1 (8080)

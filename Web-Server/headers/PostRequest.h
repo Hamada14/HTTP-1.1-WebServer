@@ -7,8 +7,16 @@
 
 class PostRequest : public Request {
 public:
-    PostRequest(std::string request);
+    PostRequest(std::string request, std::map<std::string, std::string> headers);
     void process(Socket* socket);
+
+private:
+    const static std::regex FILE_PATH_REGEX;
+
+    std::map<std::string, std::string> headers_;
+    std::string file_path_;
+
+    std::string extract_file_path(std::string request);
 };
 
 

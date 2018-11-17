@@ -7,7 +7,7 @@
 
 class GetRequest : public Request {
 public:
-    GetRequest(std::string request);
+    GetRequest(std::string request, std::map<std::string, std::string> headers);
     void process(Socket* socket);
 
 private:
@@ -15,6 +15,7 @@ private:
     const static char BACK_SLASH;
     std::string file_path_;
     std::string extract_file_path(std::string request);
+    std::map<std::string, std::string> headers;
 };
 
 

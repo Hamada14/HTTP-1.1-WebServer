@@ -2,6 +2,7 @@
 #include "../headers/GetRequest.h"
 #include "../headers/PostRequest.h"
 #include "../headers/MIMETypesLoader.h"
+#include "../headers/Util.h"
 
 const std::string Request::GET_METHOD = "GET";
 const std::string Request::POST_METHOD = "POST";
@@ -22,13 +23,30 @@ const std::string Request::NOT_FOUND_HTML_PAGE = "<html>" + LINE_TERMINATOR +
 
 const std::string Request::HTML_MIME_TYPE = "text/html";
 
+#include <iostream>
+
 Request* Request::build_request(std::string request) {
+    std::cout << request << std::endl;
+    std::map<std::string, std::string> headers = extract_headers(request);
     if(request.substr(0, GET_METHOD.length()) == GET_METHOD) {
-        return new GetRequest(request);
+        return new GetRequest(request, headers);
     } else if(request.substr(0, POST_METHOD.length()) == POST_METHOD) {
-        return new PostRequest(request);
+        return new PostRequest(request, headers);
     }
     return NULL;
+}
+
+std::map<std::string, std::string> Request::extract_headers(std::string request) {
+    std::map<std::string, std::string> headers;
+    int last_new_line_index = request.find(Request::LINE_TERMINATOR);
+    int next_new_line_index;
+    while((next_new_line_index = request.find(Request::LINE_TERMINATOR, last_new_line_index + Request::LINE_TERMINATOR.length() + 1)) != std::string::npos) {
+        std::string header_line = request.substr(last_new_line_index + Request::LINE_TERMINATOR.length(), next_new_line_index - last_new_line_index - Request::LINE_TERMINATOR.length());
+        std::vector<std::string> splits = Util::split(header_line, ':');
+        headers[splits[0]] = Util::trim(splits[1]);
+        last_new_line_index = next_new_line_index;
+    }
+    return headers;
 }
 
 std::string Request::not_found_response() {

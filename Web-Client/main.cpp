@@ -63,23 +63,16 @@ void error(string msg){
 int makeSocket(string hostName, string portNumber){
     int sockfd;
     struct sockaddr_in serv_addr;
-    // struct hostent *server;
 
     char buffer[BUFFER_SIZE];
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if(sockfd < 0) error("ERROR opening socket.");
 
-    // server = gethostbyname(hostName.c_str());
-    // if(server == NULL) error("ERROR, no such host.");
-
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_port = htons(atoi(portNumber.c_str()));
     serv_addr.sin_family = AF_INET;
 
-    // bcopy((char *)server->h_addr,
-       //   (char *)&serv_addr.sin_addr.s_addr,
-         // server->h_length);
     if(connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
         error("ERROR connecting.");
 
@@ -91,8 +84,9 @@ void executeCommand(string method, string fileName, string hostName, string port
     int sockfd = makeSocket(hostName, portNumber);
 
     if(method == "POST"){
+        fileName = fileName.substr(1); // Removing the first forward slash
         string fileString = readFile(fileName);
-        string header = "POST " + fileName + " HTTP/1.1\r\n" +
+        string header = "POST /" + fileName + " HTTP/1.1\r\n" +
                         "Host: 127.0.0.1\r\n" +
                         "Content-Type: application/octet-stream\r\n" +
                         "Content-Length: " + to_string(fileString.size()) + "\r\n" +
@@ -103,7 +97,6 @@ void executeCommand(string method, string fileName, string hostName, string port
             return;
         }
         printf("POST: header sent successfully, return code = %d\n", sendReturnValue);
-
         sendReturnValue = send(sockfd, fileString.c_str(), fileString.size(), 0);
         if(sendReturnValue < 0){
             puts("POST: file send failed.");

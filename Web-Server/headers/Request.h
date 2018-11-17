@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <map>
 
 class Socket;
 class Request {
@@ -28,6 +29,7 @@ protected:
 
     static const std::string HTML_MIME_TYPE;
 
+    static std::map<std::string, std::string> extract_headers(std::string request);
     std::string build_response(std::string status, std::string content_type, std::string content);
     std::string build_header(std::string header_name, std::string header_value);
 };

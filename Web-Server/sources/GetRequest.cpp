@@ -9,7 +9,7 @@
 const std::regex GetRequest::FILE_PATH_REGEX("GET\\s(.+)\\sHTTP\\/1.1");
 const char GetRequest::BACK_SLASH = '/';
 
-GetRequest::GetRequest(std::string request) {
+GetRequest::GetRequest(std::string request, std::map<std::string, std::string> headers): headers(headers) {
     file_path_ = Util::join_path(
             Config::getInstance()->get(Config::PUBLIC_DIRECTORY_KEY),
             extract_file_path(request));
