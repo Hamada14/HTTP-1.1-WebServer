@@ -4,14 +4,21 @@
 
 #include <string>
 #include <map>
+#include <memory>
 
 class Socket;
 class Request {
 public:
-    static Request* build_request(std::string request);
+    enum Type { GET, POST, EMPTY, UNDEFINED };
+    Request(Type);
+
+    static std::shared_ptr<Request> build_request(std::string request);
     virtual void process(Socket* socket) = 0;
     std::string not_found_response();
     std::string read_file_response(std::istream& file, std::string file_extenson);
+
+
+    Type type();
 
 protected:
     static const std::string GET_METHOD;
@@ -32,6 +39,22 @@ protected:
     static std::map<std::string, std::string> extract_headers(std::string request);
     std::string build_response(std::string status, std::string content_type, std::string content);
     std::string build_header(std::string header_name, std::string header_value);
+
+    Type type_;
+};
+
+class EmptyRequest: public Request {
+public:
+    EmptyRequest();
+    void process(Socket* socket) {
+    }
+};
+
+class UndefinedRequest: public Request {
+public:
+    UndefinedRequest();
+    void process(Socket* socket) {
+    }
 };
 
 

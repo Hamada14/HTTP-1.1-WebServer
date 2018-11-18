@@ -25,21 +25,34 @@ const std::string Request::NOT_FOUND_HTML_PAGE = "<html>" + LINE_TERMINATOR +
 
 const std::string Request::HTML_MIME_TYPE = "text/html";
 
+EmptyRequest::EmptyRequest(): Request(Type::EMPTY) {}
+
+UndefinedRequest::UndefinedRequest(): Request(Type::UNDEFINED) {}
+
 /**
  * Builds a request depending on the type required.
  * It can be either GET or POST request.
  * @param request String format of the request.
  * @return Request object.
  */
-Request* Request::build_request(std::string request) {
+std::shared_ptr<Request> Request::build_request(std::string request) {
     std::cout << request << std::endl;
     std::map<std::string, std::string> headers = extract_headers(request);
-    if(request.substr(0, GET_METHOD.length()) == GET_METHOD) {
-        return new GetRequest(request, headers);
+    if(request.empty()) {
+        return std::make_shared<EmptyRequest>();
+    } else if(request.substr(0, GET_METHOD.length()) == GET_METHOD) {
+        return std::make_shared<GetRequest>(request, headers);
     } else if(request.substr(0, POST_METHOD.length()) == POST_METHOD) {
-        return new PostRequest(request, headers);
+        return std::make_shared<PostRequest>(request, headers);
     }
-    return NULL;
+    return std::make_shared<UndefinedRequest>();
+}
+
+Request::Request(Type type): type_(type) {
+}
+
+Request::Type Request::type() {
+    return this->type_;
 }
 
 /**
