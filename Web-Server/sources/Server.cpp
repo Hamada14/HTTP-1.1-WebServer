@@ -14,6 +14,7 @@
 const int Server::DEFAULT_PORT_ = 8080;
 const int Server::THREADS_COUNT_ = 10;
 const int Server::CONNECTION_TIME_OUT_ = 4000; // In millis
+const int Server::MAX_ALLOWED_CLIENTS_ = 8;
 
 Server::Server() : port_(DEFAULT_PORT_), pool_(THREADS_COUNT_) {
     configure_address();
@@ -115,6 +116,16 @@ void Server::run() {
         int new_socket_listener =
             accept(socket_descriptor, (struct sockaddr *)&address_,
                    (socklen_t *)&address_len);
+
+        if (current_workers_.size() == MAX_ALLOWED_CLIENTS_) {
+            using namespace std::chrono_literals;
+
+            std::cout << "Reached max clients, sleeping for 1s\n"
+                      << std::flush;
+            std::this_thread::sleep_for(1s);
+            continue;
+        }
+
         if (new_socket_listener < 0 && errno == EWOULDBLOCK) {
             using namespace std::chrono_literals;
 
@@ -139,6 +150,7 @@ void Server::run() {
         // READER
         pool_.enqueue(
             [new_socket_listener, worker] { worker->readRequests(); });
+
         {
             // CRITICAL SECTION START
             std::unique_lock<std::mutex> lock(workers_mutex_);

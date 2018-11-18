@@ -23,6 +23,8 @@ class Server {
     const static int THREADS_COUNT_;
     // Time in millis if no updates from an open connection.
     const static int CONNECTION_TIME_OUT_;
+    // Maximum allowed of connected clients to serve.
+    const static int MAX_ALLOWED_CLIENTS_;
 
     int port_;
     struct sockaddr_in address_;
