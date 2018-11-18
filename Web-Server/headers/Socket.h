@@ -1,15 +1,14 @@
 #ifndef WEB_SERVER_SOCKET_H
 #define WEB_SERVER_SOCKET_H
 
-
-#include <string>
-#include <regex>
+#include "Request.h"
 #include <ctime>
 #include <memory>
-#include "Request.h"
+#include <regex>
+#include <string>
 
 class Socket {
-public:
+  public:
     Socket(int socket_descriptor);
     ~Socket();
     std::string readInput(int length);
@@ -17,15 +16,13 @@ public:
     void writeOutput(std::string s);
     clock_t lastUpdated();
 
-private:
+  private:
     const static size_t BUFFER_SIZE;
     const static std::regex REQUEST_TERMINATOR;
 
     int socket_descriptor_;
     std::string buffer_;
     std::clock_t last_updated_;
-
 };
 
-
-#endif //WEB_SERVER_SOCKET_H
+#endif // WEB_SERVER_SOCKET_H

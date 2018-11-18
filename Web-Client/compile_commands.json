@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Client/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Client.dir/main.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Client/main.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Client/main.cpp"
+}
+]

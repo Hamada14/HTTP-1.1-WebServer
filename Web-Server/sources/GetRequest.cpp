@@ -19,7 +19,7 @@ GetRequest::GetRequest(std::string request, std::map<std::string, std::string> h
     file_path_ = Util::join_path(
             Config::getInstance()->get(Config::PUBLIC_DIRECTORY_KEY),
             extract_file_path(request));
-    std::cout << file_path_ << std::endl;
+    //std::cout << file_path_ << std::endl;
 }
 
 /**
