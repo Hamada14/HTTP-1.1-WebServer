@@ -14,6 +14,7 @@ public:
 private:
     const static int DEFAULT_PORT_;
     const static int THREADS_COUNT_;
+    const static int READ_TIME_OUT_;
     ThreadPool pool;
 
     int port_;

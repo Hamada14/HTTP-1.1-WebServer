@@ -15,7 +15,7 @@ const char GetRequest::BACK_SLASH = '/';
  * @param request String that contains the request.
  * @param headers Map containing the headers and their corresponding values.
  */
-GetRequest::GetRequest(std::string request, std::map<std::string, std::string> headers): headers(headers) {
+GetRequest::GetRequest(std::string request, std::map<std::string, std::string> headers): Request(Type::GET), headers(headers) {
     file_path_ = Util::join_path(
             Config::getInstance()->get(Config::PUBLIC_DIRECTORY_KEY),
             extract_file_path(request));

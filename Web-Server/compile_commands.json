@@ -1,0 +1,52 @@
+[
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/main.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/main.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/main.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/Server.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Server.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Server.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/Socket.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Socket.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Socket.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/ServerWorker.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/ServerWorker.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/ServerWorker.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/Request.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Request.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Request.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/GetRequest.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/GetRequest.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/GetRequest.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/PostRequest.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/PostRequest.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/PostRequest.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/MIMETypesLoader.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/MIMETypesLoader.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/MIMETypesLoader.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/Config.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Config.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Config.cpp"
+},
+{
+  "directory": "/home/vontman/Dropbox/projects/YAWS/Web-Server/bin",
+  "command": "/usr/bin/c++      -std=gnu++14 -o CMakeFiles/Web_Server.dir/sources/Util.cpp.o -c /home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Util.cpp",
+  "file": "/home/vontman/Dropbox/projects/YAWS/Web-Server/sources/Util.cpp"
+}
+]
