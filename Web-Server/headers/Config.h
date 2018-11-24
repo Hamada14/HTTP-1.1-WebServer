@@ -10,6 +10,8 @@ class Config {
 public:
     const static std::string PUBLIC_DIRECTORY_KEY;
     const static std::string PORT_KEY;
+    const static std::string CONNECTION_TIME_OUT;
+    const static std::string HIGH_TRAFFIC_CONNECTION_TIME_OUT;
 
 
     ~Config();
@@ -31,6 +33,8 @@ private:
 
     const static std::string DEFAULT_PUBLIC_DIRECTORY;
     const static std::string DEFAULT_PORT;
+    const static std::string DEFAULT_CONNECTION_TIME_OUT;
+    const static std::string DEFAULT_HIGH_TRAFFIC_CONNECTION_TIME_OUT;
 
     Config();
     void readFileProperties();

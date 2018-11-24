@@ -21,16 +21,19 @@ class Server {
     const static int DEFAULT_PORT_;
     // Number of threads used in the thread pool.
     const static int THREADS_COUNT_;
-    // Time in millis if no updates from an open connection.
-    const static int CONNECTION_TIME_OUT_;
     // Maximum allowed of connected clients to serve.
     const static int MAX_ALLOWED_CLIENTS_;
 
     int port_;
     struct sockaddr_in address_;
+    // Time in millis if no updates from an open connection.
+    int connection_time_out_;
+    // Time in millis if no updates from an open connection in case of high traffic
+    int high_traffic_connection_time_out_;
 
     void configure_address();
     int create_socket_descriptor();
+    bool has_high_traffic();
 
     ThreadPool pool_;
 

@@ -1,5 +1,6 @@
 #include "../headers/Server.h"
 #include "../headers/ServerWorker.h"
+#include "../headers/Config.h"
 #include <condition_variable>
 #include <cstdlib>
 #include <errno.h>
@@ -11,12 +12,14 @@
 #include <thread>
 #include <unistd.h>
 
+
 const int Server::DEFAULT_PORT_ = 8080;
 const int Server::THREADS_COUNT_ = 10;
-const int Server::CONNECTION_TIME_OUT_ = 4000; // In millis
 const int Server::MAX_ALLOWED_CLIENTS_ = 8;
 
 Server::Server() : port_(DEFAULT_PORT_), pool_(THREADS_COUNT_) {
+    this->connection_time_out_= std::stoi(Config::getInstance()->get(Config::CONNECTION_TIME_OUT)); // In millis
+    this->high_traffic_connection_time_out_ = std::stoi(Config::getInstance()->get(Config::HIGH_TRAFFIC_CONNECTION_TIME_OUT));
     configure_address();
 }
 
@@ -84,7 +87,7 @@ void Server::startManager() {
                      it != current_workers_.end();) {
                     auto &worker = *it;
                     double elapsed_time = clock() - worker->lastUpdated();
-                    if (elapsed_time >= CONNECTION_TIME_OUT_) {
+                    if (elapsed_time >= this->connection_time_out_ || (elapsed_time >= this->high_traffic_connection_time_out_ && has_high_traffic())) {
                         worker->stop();
                         it = current_workers_.erase(it);
                         std::cout << "MANAGER removed a worker\n" << std::flush;
@@ -99,6 +102,10 @@ void Server::startManager() {
         }
         std::cout << "MANAGER exit\n" << std::flush;
     });
+}
+
+bool Server::has_high_traffic() {
+    return current_workers_.size() == MAX_ALLOWED_CLIENTS_;
 }
 
 void Server::run() {

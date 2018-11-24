@@ -17,14 +17,20 @@ const char Config::SETTING_SEPARATOR = '=';
 
 const std::string Config::PUBLIC_DIRECTORY_KEY = "public_directory";
 const std::string Config::PORT_KEY = "port";
+const std::string Config::CONNECTION_TIME_OUT = "connection_time_out";
+const std::string Config::HIGH_TRAFFIC_CONNECTION_TIME_OUT = "high_traffic_connection_time_out";
 
 const std::string Config::DEFAULT_PUBLIC_DIRECTORY = std::string(getenv("HOME")) + "/web-server";
 const std::string Config::DEFAULT_PORT = "8080";
+const std::string Config::DEFAULT_CONNECTION_TIME_OUT = "4000";
+const std::string Config::DEFAULT_HIGH_TRAFFIC_CONNECTION_TIME_OUT = "1000";
 
 Config::Config() {
     this->key_to_value = {
-            {PUBLIC_DIRECTORY_KEY,              DEFAULT_PUBLIC_DIRECTORY           },
-            {PORT_KEY,                          DEFAULT_PORT                       }
+            {PUBLIC_DIRECTORY_KEY,              DEFAULT_PUBLIC_DIRECTORY                },
+            {PORT_KEY,                          DEFAULT_PORT                            },
+            {CONNECTION_TIME_OUT,               DEFAULT_CONNECTION_TIME_OUT             },
+            {HIGH_TRAFFIC_CONNECTION_TIME_OUT,  DEFAULT_HIGH_TRAFFIC_CONNECTION_TIME_OUT}
     };
 }
 
